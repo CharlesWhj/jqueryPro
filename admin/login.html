@@ -37,6 +37,31 @@
       </form>
     </div>
   </div>
+  <!-- 引用模态框提示用户 -->
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+    Launch demo modal
+  </button>
+
+  <!-- Modal -->
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+              aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">温馨提示</h4>
+        </div>
+        <div class="modal-body">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
   <script>
     $(function () {
       const $input_sub = $(".input_sub");
@@ -46,8 +71,10 @@
         e.preventDefault();
         let username = $input_txt.val().trim();
         let password = $input_pass.val().trim();
+        // 账号或密码为空提示用户
         if (username === "" || password === "") {
-          alert("亲，请输入账号或密码");
+          $(".modal-body").text("亲，请输入账号或密码哦")
+          $('#myModal').modal();
           return;
         };
         $.post({
@@ -58,10 +85,14 @@
           },
           success: function (res) {
             console.log(res);
+            // 账号密码不为空提示用户
+            $(".modal-body").text(res.msg);
+            $('#myModal').modal();
             if (res.code === 200) {
-              location.href = "./index.html";
-            } else {
-              alert(res.msg)
+              //若账号密码正确点击模态框的确定按钮跳转页面
+              $('#myModal').on('hidden.bs.modal', function (e) {
+                location.href = "./index.html";
+              })
             }
           }
         })
