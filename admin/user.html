@@ -11,7 +11,8 @@
     <link rel="stylesheet" href="css/iconfont.css">
     <link rel="stylesheet" href="css/main.css">
     <script src="./libs/jquery-1.12.4.min.js"></script>
-
+    <!-- 引入url地址js文件 -->
+    <script src="./libs/http.js"></script>
 </head>
 
 <body>
@@ -68,6 +69,27 @@
             </form>
         </div>
     </div>
+    <!-- 获取用户详细信息 -->
+    <script>
+        $(function () {
+            $.get({
+                url: BigNew.user_detail,
+                success: function (res) {
+                    console.log(res);
+                    // 获取用户名
+                    $("#inputEmail1").val(res.data.username);
+                    // 获取昵称
+                    $("#inputEmail2").val(res.data.nickname);
+                    // 获取邮箱
+                    $("#inputEmail3").val(res.data.email);
+                    // 获取头像
+                    $(".user_pic").attr("src", res.data.userPic);
+                    // 获取密码
+                    $("#inputEmail4").val(res.data.password);
+                }
+            })
+        })
+    </script>
 </body>
 
 </html>
