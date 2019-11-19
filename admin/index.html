@@ -13,6 +13,8 @@
     <script src="./libs/jquery-1.12.4.min.js"></script>
     <!-- 导入bootstrap的js文件 -->
     <script src="./libs/bootstrap/js/bootstrap.min.js"></script>
+    <!-- 引入url地址js文件 -->
+    <script src="./libs/http.js"></script>
 </head>
 
 <body>
@@ -75,7 +77,8 @@
         // 用iq的方法获取token指令
         $(function () {
             $.get({
-                url: "http://localhost:8080/api/v1/admin/user/info",
+                // 把地址封装起来，方便调用
+                url: BigNew.user_info,
                 // 用jq的方法把请求头抽取出来,封装到jq库
                 headers: {
                     Authorization: localStorage.getItem("token")
