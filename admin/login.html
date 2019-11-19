@@ -55,7 +55,7 @@
         <div class="modal-body">
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+          <button type="button" class="btn btn-success" data-dismiss="modal">确定</button>
         </div>
       </div>
     </div>
@@ -92,6 +92,7 @@
               //若账号密码正确点击模态框的确定按钮跳转页面
               $('#myModal').on('hidden.bs.modal', function (e) {
                 location.href = "./index.html";
+                localStorage.setItem("token", res.token)
               })
             }
           }
