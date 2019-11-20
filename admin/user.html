@@ -128,7 +128,7 @@
                                     Authorization: localStorage.getItem("token")
                                 },
                                 success: function (res) {
-                                    // console.log(res);
+                                    console.log(res);
                                     parent.$(".user_info>img").attr("src", res.data.userPic);
                                     parent.$(".user_info>span").html(`欢迎&nbsp;&nbsp;${res.data.nickname}`);
                                     parent.$(".user_center_link>img").attr("src", res.data.userPic);
