@@ -75,20 +75,73 @@
             $.get({
                 url: BigNew.user_detail,
                 success: function (res) {
-                    console.log(res);
-                    // 获取用户名
-                    $("#inputEmail1").val(res.data.username);
-                    // 获取昵称
-                    $("#inputEmail2").val(res.data.nickname);
-                    // 获取邮箱
-                    $("#inputEmail3").val(res.data.email);
-                    // 获取头像
-                    $(".user_pic").attr("src", res.data.userPic);
-                    // 获取密码
-                    $("#inputEmail4").val(res.data.password);
+                    if (res.code === 200) {
+                        // console.log(res);
+                        // // 获取用户名
+                        // $("#inputEmail1").val(res.data.username);
+                        // // 获取昵称
+                        // $("#inputEmail2").val(res.data.nickname);
+                        // // 获取邮箱
+                        // $("#inputEmail3").val(res.data.email);
+                        // // 获取头像
+                        // $(".user_pic").attr("src", res.data.userPic);
+                        // // 获取密码
+                        // $("#inputEmail4").val(res.data.password);
+                        // 简化
+                        for (const key in res.data) {
+                            // console.log(key);
+                            // console.log(res.data[key]);
+                            $("input." + key).val(res.data[key])
+                        }
+                        $(".user_pic").attr("src", res.data.userPic);
+                    }
                 }
             })
-        })
+            // 预览图片
+            $("#exampleInputFile").change(function () {
+                let file = this.files[0];
+                url = URL.createObjectURL(file)
+                // console.log(url);
+                $(".user_pic").attr("src", url);
+            });
+            // 修改客户信息
+            $("button.btn-edit").click(function (e) {
+                e.preventDefault();
+                let data = new FormData($("#form")[0]);
+                $.post({
+                    url: BigNew.user_edit,
+                    data: data,
+                    contentType: false,
+                    processData: false,
+                    success: function (res) {
+                        // console.log(res);
+
+                        // parent.location.reload();
+                        // 不刷新页面
+                        if (res.code === 200) {
+
+                            $.get({
+                                // 把地址封装起来，方便调用
+                                url: BigNew.user_info,
+                                // 用jq的方法把请求头抽取出来,封装到jq库
+                                headers: {
+                                    Authorization: localStorage.getItem("token")
+                                },
+                                success: function (res) {
+                                    // console.log(res);
+                                    parent.$(".user_info>img").attr("src", res.data.userPic);
+                                    parent.$(".user_info>span").html(`欢迎&nbsp;&nbsp;${res.data.nickname}`);
+                                    parent.$(".user_center_link>img").attr("src", res.data.userPic);
+                                    location.reload();
+                                }
+                            })
+                        }
+
+                    }
+                })
+            })
+        });
+
     </script>
 </body>
 
