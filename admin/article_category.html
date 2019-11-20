@@ -2,18 +2,20 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>文章列表</title>
-    <link rel="stylesheet" href="./libs/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/reset.css">
-    <link rel="stylesheet" href="css/iconfont.css">
-    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="./libs/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/iconfont.css" />
+    <link rel="stylesheet" href="css/main.css" />
     <script src="./libs/jquery-1.12.4.min.js"></script>
     <script src="./libs/bootstrap/js/bootstrap.min.js"></script>
     <!-- 引入模板引擎js文件 -->
     <script src="./libs/template-web.js"></script>
+    <!-- 引入地址js文件 -->
+    <script src="./libs/http.js"></script>
 </head>
 
 <body>
@@ -30,15 +32,15 @@
                         <th class="text-center" width="100">操作</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
+                <tbody id="tbd">
+                    <!-- <tr>
                         <td>奇趣事</td>
                         <td>funny</td>
                         <td class="text-center">
                             <a href="javascript:void(0)" data-toggle="modal" class=" btn btn-info btn-xs">编辑</a>
                             <a href="javascript:void(0)" class="btn btn-danger btn-xs">删除</a>
                         </td>
-                    </tr>
+                    </tr> -->
                 </tbody>
                 <tfoot>
                     <tr>
@@ -51,5 +53,127 @@
             </table>
         </div>
     </div>
+    <!-- 引入模态框 -->
+
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="exampleModalLabel">New message</h4>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <!-- 点击编辑或删除的时候储存id -->
+                        <input type="hidden" value="editID" class="editID">
+                        <div class="form-group">
+                            <label for="recipient-name" class="control-label">文章分类名称</label>
+                            <input type="text" class="form-control" id="recipient-name">
+                        </div>
+                        <div class="form-group">
+                            <label for="message-text" class="control-label">文章分类别名</label>
+                            <textarea class="form-control" id="message-text"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary aditAdd">确认</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 调用模态框 -->
+    <!-- <a href="javascript:void(0)" data-toggle="modal" class=" btn btn-info btn-xs">编辑</a>;
+    <a href="javascript:void(0)" data-toggle="modal" class="btn btn-danger btn-xs">删除</a>; -->
+
+
+    <!-- 创建引擎结构 -->
+    <script type="text/html" id="list">
+        {{each data}}
+      <tr>
+           <td>{{$value.name}}</td>
+              <td>{{$value.slug}}</td>
+              <td class="text-center">
+                  <a href="javascript:void(0)" data-toggle="modal"  data-id="{{$value.id}}" class=" btn btn-info btn-xs btn-edit" data-target="#myModal">编辑</a>
+                  <a href="javascript:void(0)"  data-toggle="modal"  data-id="{{$value.id}}" class="btn btn-danger btn-xs">删除</a>
+              </td>
+          </tr>
+          {{/each}}
+    </script>
+    <script>
+        $(function () {
+            // 封装函数，并调用，自动刷新页面
+            function release() {
+                $.get({
+                    url: BigNew.category_list,
+                    success: function (res) {
+                        // console.log(res);
+                        let htmlStr = template("list", res);
+                        // console.log(htmlStr);
+                        // 渲染分类页面
+                        $("#tbd").html(htmlStr)
+                    }
+                });
+            };
+            release();
+            // 给模态框添加点击事件，点击编辑或新增相对应做出改变
+            $('#myModal').on('show.bs.modal', function (e) {
+                // console.log(e.relatedTarget);
+                if ($(e.relatedTarget).hasClass("btn-edit")) {
+                    $("#exampleModalLabel").text("编辑文章分类");
+                    $(".aditAdd").text("编辑").removeClass("btn btn-success");
+                    // 点击编辑获取并存在form
+                    let editID = $(e.relatedTarget).attr("data-id");
+                    // console.log(editID);
+                    // 发送ajax请求
+                    $.get({
+                        url: BigNew.category_search,
+                        data: {
+                            id: editID
+                        },
+                        success: function (res) {
+                            // console.log(res);
+                            $("#recipient-name").val(res.data[0].name);
+                            $("#message-text").val(res.data[0].slug);
+                            $(".editID").val(res.data[0].id)
+                        }
+                    })
+                } else {
+                    $("#exampleModalLabel").text("新增文章分类");
+                    $(".aditAdd").text("新增").addClass("btn btn-success");
+                }
+            });
+            // 点击模态框的编辑按钮进行编辑,或新增按钮进行新增
+            $(".aditAdd").click(function () {
+                if ($(this).hasClass("btn-success")) {
+                    // alert("你好")
+                } else {
+                    let name = $("#recipient-name").val();
+                    let slug = $("#message-text").val();
+                    let id = $(".editID").val();
+                    $.post({
+                        url: BigNew.category_edit,
+                        data: {
+                            id: id,
+                            name: name,
+                            slug: slug
+                        },
+                        success: function (res) {
+                            // console.log(res);
+                            // 修改成功后自动刷新页面，模态框消失
+                            release();
+                            $('#myModal').modal('hide')
+                        }
+                    })
+                }
+
+            })
+        })
+
+    </script>
+</body>
 
 </html>
