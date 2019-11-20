@@ -78,7 +78,7 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="cancel">取消</button>
                     <button type="button" class="btn btn-primary aditAdd">确认</button>
                 </div>
             </div>
@@ -144,12 +144,30 @@
                 } else {
                     $("#exampleModalLabel").text("新增文章分类");
                     $(".aditAdd").text("新增").addClass("btn btn-success");
+                    // 点击新增时重置一下
+                    $(".modal-body form")[0].reset();
                 }
             });
             // 点击模态框的编辑按钮进行编辑,或新增按钮进行新增
             $(".aditAdd").click(function () {
                 if ($(this).hasClass("btn-success")) {
-                    // alert("你好")
+                    // 新增功能实现
+                    let name = $("#recipient-name").val();
+                    let slug = $("#message-text").val();
+                    $.post({
+                        url: BigNew.category_add,
+                        data: {
+                            name: name,
+                            slug: slug
+                        },
+                        success: function (res) {
+                            // console.log(res);
+                            if (res.code === 201) {
+                                release();
+                                $('#myModal').modal('hide');
+                            }
+                        }
+                    });
                 } else {
                     let name = $("#recipient-name").val();
                     let slug = $("#message-text").val();
@@ -170,6 +188,10 @@
                     })
                 }
 
+            });
+            // 给模态框的取消按钮注册取消事件
+            $("#cancel").click(function () {
+                $(".modal-body form")[0].reset()
             })
         })
 
