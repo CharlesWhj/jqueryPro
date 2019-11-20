@@ -98,7 +98,7 @@
               <td>{{$value.slug}}</td>
               <td class="text-center">
                   <a href="javascript:void(0)" data-toggle="modal"  data-id="{{$value.id}}" class=" btn btn-info btn-xs btn-edit" data-target="#myModal">编辑</a>
-                  <a href="javascript:void(0)"  data-toggle="modal"  data-id="{{$value.id}}" class="btn btn-danger btn-xs">删除</a>
+                  <a href="javascript:void(0)"  data-toggle="modal"  data-id="{{$value.id}}" class="btn btn-danger btn-xs delete" >删除</a>
               </td>
           </tr>
           {{/each}}
@@ -192,7 +192,31 @@
             // 给模态框的取消按钮注册取消事件
             $("#cancel").click(function () {
                 $(".modal-body form")[0].reset()
-            })
+            });
+            // 删除事件实现
+            // $("#tbd").click(".delete", function () {
+            //     let DeleteId = $(this).prop("data-id");
+            //     console.log(DeleteId);
+            // })
+            $("#tbd").on("click", ".delete", function () {
+                let DeleteId = $(this).attr("data-id");
+                // console.log(DeleteId);
+                if (confirm("亲，你真的要删除吗") === true) {
+                    // 如果要删除，发送ajax请求
+                    $.post({
+                        url: BigNew.category_delete,
+                        data: { id: DeleteId },
+                        success: function (res) {
+                            // console.log(res);
+                            // 如果删除成功，自动刷新页面
+                            if (res.code === 204) {
+                                release();
+                            }
+                        }
+                    })
+
+                }
+            });
         })
 
     </script>
