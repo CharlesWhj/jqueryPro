@@ -183,7 +183,7 @@
                         perpage: perpage
                     },
                     success: function (res) {
-                        console.log(res);
+                        // console.log(res);
                         if (res.code === 200 && res.data.data.length !== 0) {
                             let htmlstr = template("article-list", res);
                             // console.log(htmlstr);
@@ -192,11 +192,45 @@
                             $('#pagination-demo').twbsPagination("changeTotalPages", res.data.totalPage, 1);
                             $('#pagination-demo').show();
                         } else {
+                            // 点击筛选时页码总数变化，没有数据时，不用页码，提示用户没有数据
                             $('#pagination-demo').hide();
                             $("tbody").html(`<tr><td colspan=6 style="text-align:center;color:red;font-size:20px">亲，没有数据哦</td></tr>`)
                         }
                     }
                 });
+            });
+            // 删除功能的实现
+            $("tbody").on("click", ".delete", function () {
+                // alert("你好")
+                if (confirm("亲，你确定要删除这条数据吗") === true) {
+                    $.post({
+                        url: BigNew.article_delete,
+                        data: { id: $(this).attr("data-id") },
+                        success: function (res) {
+                            // console.log(res);
+                            if (res.code === 204) {
+                                $.get({
+                                    url: BigNew.article_query,
+                                    data: {
+                                        type: $("#selCategory").val(),
+                                        state: $("#selStatus").val(),
+                                        page: page,
+                                        perpage: perpage
+                                    },
+                                    success: function (res) {
+                                        // console.log(res);
+                                        let htmlstr = template("article-list", res);
+                                        // console.log(htmlstr);
+
+                                        $("tbody").html(htmlstr);
+                                    }
+                                });
+                            }
+
+                        }
+                    })
+                }
+
             })
         })
     </script>
