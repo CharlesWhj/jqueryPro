@@ -94,7 +94,7 @@
                 <td>{{$value.title}}</td>
                 <td>{{$value.author}}</td>
                 <td>{{$value.category}}</td>
-                <td class="text-center">{{$value.data}}</td>
+                <td class="text-center">{{$value.date}}</td>
                 <td class="text-center">{{$value.state}}</td>
                 <td class="text-center">
                         <a href="article_edit.html?id={{$value.state}}" class="btn btn-default btn-xs">编辑</a>
@@ -183,16 +183,21 @@
                         perpage: perpage
                     },
                     success: function (res) {
-                        // console.log(res);
-                        let htmlstr = template("article-list", res);
-                        // console.log(htmlstr);
-
-                        $("tbody").html(htmlstr)
-
+                        console.log(res);
+                        if (res.code === 200 && res.data.data.length !== 0) {
+                            let htmlstr = template("article-list", res);
+                            // console.log(htmlstr);
+                            $("tbody").html(htmlstr);
+                            // 当点击筛选时，页面总数变化
+                            $('#pagination-demo').twbsPagination("changeTotalPages", res.data.totalPage, 1);
+                            $('#pagination-demo').show();
+                        } else {
+                            $('#pagination-demo').hide();
+                            $("tbody").html(`<tr><td colspan=6 style="text-align:center;color:red;font-size:20px">亲，没有数据哦</td></tr>`)
+                        }
                     }
                 });
             })
-
         })
     </script>
 
