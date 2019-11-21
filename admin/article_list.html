@@ -116,14 +116,14 @@
                 }
             });
             // 渲染文章列表,默认首页
-            let page = 1;
+            let mypage = 1;
             let perpage = 10;
             $.get({
                 url: BigNew.article_query,
                 data: {
                     type: $("#selCategory").val(),
                     state: $("#selStatus").val(),
-                    page: page,
+                    page: mypage,
                     perpage: perpage
                 },
                 success: function (res) {
@@ -144,13 +144,13 @@
                             //    console.log(event);
                             // console.log(page);
                             // 点击分页时相对应跳转页面
-                            page = page;
+                            mypage = page;
                             $.get({
                                 url: BigNew.article_query,
                                 data: {
                                     type: $("#selCategory").val(),
                                     state: $("#selStatus").val(),
-                                    page: page,
+                                    page: mypage,
                                     perpage: perpage
                                 },
                                 success: function (res) {
@@ -179,7 +179,7 @@
                     data: {
                         type: $("#selCategory").val(),
                         state: $("#selStatus").val(),
-                        page: page,
+                        page: mypage,
                         perpage: perpage
                     },
                     success: function (res) {
@@ -203,6 +203,8 @@
             $("tbody").on("click", ".delete", function () {
                 // alert("你好")
                 if (confirm("亲，你确定要删除这条数据吗") === true) {
+                    // console.log(mypage);
+
                     $.post({
                         url: BigNew.article_delete,
                         data: { id: $(this).attr("data-id") },
@@ -214,7 +216,7 @@
                                     data: {
                                         type: $("#selCategory").val(),
                                         state: $("#selStatus").val(),
-                                        page: page,
+                                        page: mypage,
                                         perpage: perpage
                                     },
                                     success: function (res) {
@@ -223,6 +225,8 @@
                                         // console.log(htmlstr);
 
                                         $("tbody").html(htmlstr);
+                                        // 当点击筛选时，页面总数变化
+                                        // $('#pagination-demo').twbsPagination("changeTotalPages", res.data.totalPage, 1);
                                     }
                                 });
                             }
