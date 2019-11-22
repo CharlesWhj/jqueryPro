@@ -185,18 +185,31 @@
                 })
             })
 
-            // $.post({
-            //     url: BigNew.article_edit,
-            // data: {
-            //     id: newobj.id,
-            //     title: $("#inputTitle").val(),
-            //     cover: $("#inputCover")[0].files[0],
-            //     categoryId: $("select.form-control").val(),
-            //     date: $("#testico").val(),
-            //     content:
-            // }
+            // 保存为草稿功能的实现
+            $("button.btn-draft").on("click", function (e) {
+                e.preventDefault();
+                let editDate = new FormData($("#form")[0]);
+                editDate.append("content", editor.txt.html());
+                // editDate.append("state", "已发布");
+                // 发送ajax请求
+                $.post({
+                    url: BigNew.article_edit,
+                    data: editDate,
+                    processData: false,
+                    contentType: false,
+                    success: function (res) {
+                        // console.log(res);
+                        if (res.code === 200) {
+                            alert('已成功保存为草稿')
+                            window.history.back();
 
-            // })
+                        }
+                    }
+                })
+            })
+
+
+
 
             // 把location.search转为包含id的obj
             function str2obj(str) {
