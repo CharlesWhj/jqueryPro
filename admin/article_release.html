@@ -161,7 +161,27 @@
                     }
                 })
             })
-
+            // 发布存为草稿功能的实现
+            $("button.btn-draft").on("click", function (e) {
+                e.preventDefault();
+                let editDate = new FormData($("#form")[0]);
+                editDate.append("content", editor.txt.html());
+                // editDate.append("state", "已发布");
+                // 发送ajax请求
+                $.post({
+                    url: BigNew.article_publish,
+                    data: editDate,
+                    processData: false,
+                    contentType: false,
+                    success: function (res) {
+                        console.log(res);
+                        if (res.code === 200) {
+                            alert('已成功保存文章为草稿')
+                            window.location.href = "./article_list.html"
+                        }
+                    }
+                })
+            })
 
 
             // 把location.search转为包含id的obj
