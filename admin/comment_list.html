@@ -336,6 +336,40 @@
       }
       )
 
+      // 点击按钮完成删除评论的功能
+      $("tbody").on("click", ".btn-danger", function (e) {
+        e.preventDefault();
+        // alert("nihao")
+        if (confirm("亲，你确定删除这条评论吗")) {
+          // console.log("恭喜你");
+          $.post({
+            url: BigNew.comment_delete,
+            data: { id: $(this).attr("data-id") },
+            success: function (res) {
+              if (res.code === 200) {
+                $.get({
+                  url: BigNew.comment_list,
+                  data: {
+                    page: myPage,
+                    perpage: perpage
+                  },
+                  success: function (res) {
+                    // console.log(res);
+                    if (res.code === 200) {
+                      let htmlStr = template("list", res);
+                      $("tbody").html(htmlStr);
+                      // 当点击筛选时，页面总数变化
+                      $('#pagination-demo').twbsPagination("changeTotalPages", res.data.totalPage, myPage);
+                    }
+                  }
+                })
+              }
+            }
+          })
+        }
+
+      })
+
 
     })
 

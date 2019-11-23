@@ -145,6 +145,10 @@
                             // console.log(page);
                             // 点击分页时相对应跳转页面
                             mypage = page;
+                            // 判断筛选后的总页数是否小于所有的页数
+                            if (res.data.totalPage < page) {
+                                page = 1
+                            }
                             $.get({
                                 url: BigNew.article_query,
                                 data: {
@@ -183,7 +187,7 @@
                         perpage: perpage
                     },
                     success: function (res) {
-                        // console.log(res);
+                        console.log(res);
                         if (res.code === 200 && res.data.data.length !== 0) {
                             let htmlstr = template("article-list", res);
                             // console.log(htmlstr);
@@ -193,8 +197,9 @@
                             $('#pagination-demo').show();
                         } else {
                             // 点击筛选时页码总数变化，没有数据时，不用页码，提示用户没有数据
-                            $('#pagination-demo').hide();
-                            $("tbody").html(`<tr><td colspan=6 style="text-align:center;color:red;font-size:20px">亲，没有数据哦</td></tr>`)
+                            // $('#pagination-demo').hide();
+                            // $("tbody").html(`<tr><td colspan=6 style="text-align:center;color:red;font-size:20px">亲，这一页没有数据哦</td></tr>`);
+                            $('#pagination-demo').twbsPagination("changeTotalPages", res.data.totalPage, 1);
                         }
                     }
                 });
@@ -226,7 +231,7 @@
 
                                         $("tbody").html(htmlstr);
                                         // 当点击筛选时，页面总数变化
-                                        // $('#pagination-demo').twbsPagination("changeTotalPages", res.data.totalPage, 1);
+                                        $('#pagination-demo').twbsPagination("changeTotalPages", res.data.totalPage, mypage);
                                     }
                                 });
                             }
