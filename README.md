@@ -1,2 +1,2 @@
-# myBignews2
-大事件第二遍
+#event
+test
